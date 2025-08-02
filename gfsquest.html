@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel GF DAY! Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            color: #e2e2e2;
+            overflow: hidden;
+            background-color: #1a1a2e;
+            background-image: 
+                linear-gradient(to right, #1a1a2e 1px, transparent 1px),
+                linear-gradient(to bottom, #1a1a2e 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: relative;
+        }
+        
+        .game-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 8px solid #4cc9f0;
+            box-shadow: 
+                0 0 0 8px #f72585,
+                0 0 0 16px #7209b7,
+                0 0 20px rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
+            overflow: hidden;
+        }
+        
+        .pixel-button {
+            background-color: #4cc9f0;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 24px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+        
+        .pixel-button:hover {
+            background-color: #f72585;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 0 #7209b7;
+        }
+        
+        .pixel-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #7209b7;
+        }
+        
+        .message-box {
+            background-color: rgba(22, 33, 62, 0.8);
+            padding: 30px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.6;
+            position: relative;
+            border: 4px solid #4cc9f0;
+            margin: 20px;
+        }
+        
+        .character {
+            width: 80px;
+            height: 80px;
+            background-color: #f72585;
+            position: relative;
+            margin: 0 auto 20px;
+            border: 4px solid #7209b7;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        .character::before, .character::after {
+            content: '';
+            position: absolute;
+            background-color: #1a1a2e;
+        }
+        
+        .character::before {
+            width: 16px;
+            height: 8px;
+            top: 24px;
+            left: 24px;
+            box-shadow: 24px 0 #1a1a2e;
+        }
+        
+        .character::after {
+            width: 16px;
+            height: 4px;
+            top: 40px;
+            left: 32px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pixel-cursor {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #f72585;
+            bottom: 20px;
+            right: 20px;
+            animation: blink 1s infinite steps(1);
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .pixel-star {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #4cc9f0;
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        .pixel-heart {
+            position: absolute;
+            font-size: 24px;
+            color: #f72585;
+            animation: heart-float 4s linear forwards;
+            z-index: 5;
+        }
+        
+        @keyframes heart-float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(20deg);
+                opacity: 0;
+            }
+        }
+        
+        .pixel-cloud {
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            animation: cloud-move 20s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes cloud-move {
+            from { transform: translateX(-100px); }
+            to { transform: translateX(calc(100vw + 100px)); }
+        }
+        
+        .pixel-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-color: #7209b7;
+            z-index: 2;
+        }
+        
+        .pixel-bush {
+            position: absolute;
+            bottom: 40px;
+            width: 40px;
+            height: 20px;
+            background-color: #4cc9f0;
+            border-radius: 10px;
+            z-index: 2;
+        }
+        
+        .pixel-tree {
+            position: absolute;
+            bottom: 40px;
+            width: 20px;
+            height: 60px;
+            background-color: #f72585;
+            z-index: 2;
+        }
+        
+        .pixel-tree::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 60px;
+            height: 40px;
+            background-color: #4cc9f0;
+            border-radius: 30px;
+            z-index: 2;
+        }
+        
+        .pixel-coin {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: gold;
+            border-radius: 50%;
+            border: 2px solid #daa520;
+            animation: coin-spin 2s linear infinite;
+            z-index: 3;
+        }
+        
+        @keyframes coin-spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        
+        .pixel-enemy {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #f72585;
+            border-radius: 5px;
+            animation: enemy-move 5s linear infinite;
+            z-index: 3;
+        }
+        
+        @keyframes enemy-move {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(100px); }
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid #f72585;
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #f72585 }
+        }
+        
+        .game-title {
+            text-shadow: 4px 4px 0 #f72585, 8px 8px 0 #7209b7;
+            animation: title-bounce 0.5s infinite alternate;
+        }
+        
+        @keyframes title-bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        .pixel-border {
+            border: 4px solid #4cc9f0;
+            box-shadow: 0 0 0 4px #f72585;
+        }
+        
+        .pixel-explosion {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #f72585;
+            border-radius: 50%;
+            animation: explode 0.5s ease-out forwards;
+            z-index: 10;
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="game-container">
+        <!-- Pixel game background elements -->
+        <div id="game-background"></div>
+        
+        <!-- Pixel ground -->
+        <div class="pixel-ground"></div>
+        
+        <!-- Game header -->
+        <div class="bg-purple-900 p-4 text-center relative z-10">
+            <h1 class="text-3xl text-pink-400 mb-2 game-title">GF DAY! QUEST</h1>
+            <div class="flex justify-center gap-6">
+                <span class="text-cyan-300">❤️ × 3</span>
+                <span class="text-yellow-300">SCORE: 9999</span>
+                <span class="text-green-300">LEVEL: 5</span>
+            </div>
+        </div>
+        
+        <!-- Pixel art character -->
+        <div class="character"></div>
+        
+        <!-- Message box -->
+        <div class="message-box mb-4 relative z-10">
+            <p id="apology-text" class="text-lg">PRESS START TO BEGIN</p>
+            <div class="pixel-cursor"></div>
+        </div>
+        
+        <!-- Action button -->
+        <div class="text-center p-4 relative z-10">
+            <button id="next-btn" class="pixel-button">START</button>
+        </div>
+        
+        <!-- Game elements container -->
+        <div id="game-elements"></div>
+    </div>
+
+    <script>
+        // Enhanced apology messages with more personality
+        const messages = [
+            "HELLO SAYANGKU ERSA...",
+            "WELCOME TO GF DAY QUEST!",
+            "Happy National Girlfriend Day! Thank you for being the reason behind my smile every day.",
+            "I’m so lucky to call you mine—today and always.",
+            "You’re not just my partner, you’re my best friend and my safe place.",
+            "On this special day, I just want to say: I love you more than words can ever express.",
+            "Being with you makes every ordinary moment feel magical.",
+            "You are my today, and all of my tomorrows.",
+            "Thank you for loving me at my best, and holding me through my worst.",
+            "Every love story is beautiful, but ours is my favorite.",
+            "Life with you is my favorite adventure. Happy National Girlfriend Day, love! 💖",
+            "WAHAHAHAHA MAKASIH ERSA CANTIKKKKK",
+            "❤️ THANK YOU FOR PLAYING ❤️",
+            "GAME OVER!"
+        ];
+        
+        // DOM elements
+        const apologyText = document.getElementById('apology-text');
+        const nextBtn = document.getElementById('next-btn');
+        const gameBackground = document.getElementById('game-background');
+        const gameElements = document.getElementById('game-elements');
+        const messageBox = document.querySelector('.message-box');
+        
+        // Game state
+        let currentMessageIndex = 0;
+        let gameScore = 0;
+        
+        // Create pixel game background
+        function createGameBackground() {
+            // Create clouds
+            for (let i = 0; i < 5; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'pixel-cloud';
+                cloud.style.top = `${Math.random() * 100 + 20}px`;
+                cloud.style.left = `${Math.random() * 100}%`;
+                cloud.style.animationDelay = `${Math.random() * 5}s`;
+                gameBackground.appendChild(cloud);
+            }
+            
+            // Create bushes
+            for (let i = 0; i < 8; i++) {
+                const bush = document.createElement('div');
+                bush.className = 'pixel-bush';
+                bush.style.left = `${Math.random() * 100}%`;
+                gameBackground.appendChild(bush);
+            }
+            
+            // Create trees
+            for (let i = 0; i < 4; i++) {
+                const tree = document.createElement('div');
+                tree.className = 'pixel-tree';
+                tree.style.left = `${Math.random() * 100}%`;
+                gameBackground.appendChild(tree);
+            }
+        }
+        
+        // Create floating coins
+        function createCoin() {
+            const coin = document.createElement('div');
+            coin.className = 'pixel-coin';
+            coin.style.left = `${Math.random() * 80 + 10}%`;
+            coin.style.top = `${Math.random() * 50 + 30}%`;
+            gameElements.appendChild(coin);
+            
+            // Make coin collectible
+            coin.addEventListener('click', () => {
+                gameScore += 100;
+                updateScore();
+                createExplosion(coin);
+                coin.remove();
+            });
+        }
+        
+        // Create enemies
+        function createEnemy() {
+            const enemy = document.createElement('div');
+            enemy.className = 'pixel-enemy';
+            enemy.style.bottom = '40px';
+            enemy.style.left = `${Math.random() * 80 + 10}%`;
+            gameElements.appendChild(enemy);
+        }
+        
+        // Create explosion effect
+        function createExplosion(element) {
+            const explosion = document.createElement('div');
+            explosion.className = 'pixel-explosion';
+            explosion.style.left = `${element.offsetLeft - 20}px`;
+            explosion.style.top = `${element.offsetTop - 20}px`;
+            gameElements.appendChild(explosion);
+            
+            setTimeout(() => {
+                explosion.remove();
+            }, 500);
+        }
+        
+        // Create floating hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'pixel-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = `${Math.random() * 80 + 10}%`;
+            heart.style.bottom = '60px';
+            heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            gameElements.appendChild(heart);
+            
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+        
+        // Update score display
+        function updateScore() {
+            const scoreElement = document.querySelector('.text-yellow-300');
+            scoreElement.textContent = `SCORE: ${gameScore}`;
+        }
+        
+        // Show next message with effects
+        function showNextMessage() {
+            if (currentMessageIndex < messages.length) {
+                // Typewriter effect
+                apologyText.textContent = messages[currentMessageIndex];
+                apologyText.classList.add('typewriter');
+                
+                // Remove typewriter class after animation
+                setTimeout(() => {
+                    apologyText.classList.remove('typewriter');
+                }, 3500);
+                
+                // Create game elements based on message
+                if (currentMessageIndex % 3 === 0) createCoin();
+                if (currentMessageIndex % 4 === 0) createEnemy();
+                if (currentMessageIndex >= messages.length - 4) {
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(createHeart, i * 300);
+                    }
+                }
+                
+                currentMessageIndex++;
+                gameScore += 50;
+                updateScore();
+                
+                // Change button text on last message
+                if (currentMessageIndex === messages.length) {
+                    nextBtn.textContent = 'PLAY AGAIN?';
+                } else if (currentMessageIndex > 0) {
+                    nextBtn.textContent = 'NEXT';
+                }
+            } else {
+                // Restart the messages
+                currentMessageIndex = 0;
+                apologyText.textContent = 'PRESS START TO BEGIN';
+                nextBtn.textContent = 'START';
+                gameScore = 0;
+                updateScore();
+            }
+        }
+        
+        // Initialize the game
+        function init() {
+            createGameBackground();
+            
+            // Button event with more game-like feedback
+            nextBtn.addEventListener('click', () => {
+                // Button press animation
+                nextBtn.style.transform = 'translateY(2px)';
+                setTimeout(() => {
+                    nextBtn.style.transform = 'translateY(0)';
+                }, 100);
+                
+                // Create click effect
+                const clickEffect = document.createElement('div');
+                clickEffect.className = 'pixel-explosion';
+                clickEffect.style.left = `${nextBtn.offsetLeft + nextBtn.offsetWidth/2 - 20}px`;
+                clickEffect.style.top = `${nextBtn.offsetTop + nextBtn.offsetHeight/2 - 20}px`;
+                gameElements.appendChild(clickEffect);
+                
+                setTimeout(() => {
+                    clickEffect.remove();
+                }, 500);
+                
+                showNextMessage();
+            });
+        }
+        
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
